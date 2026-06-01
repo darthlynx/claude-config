@@ -1,0 +1,21 @@
+# Keep the build context small and free of secrets/local junk.
+.git
+.gitignore
+*.md
+LICENSE
+bin/
+dist/
+out/
+tmp/
+.env
+.env.*
+*.local
+coverage*
+cover.out
+testdata/
+**/*_test.go
+.github/
+.idea/
+.vscode/
+Dockerfile*
+docker-compose*.yml

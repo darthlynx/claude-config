@@ -1,0 +1,51 @@
+# golangci-lint v2 configuration baseline for a Go microservice.
+# Tune per project; exclude specific findings with //nolint:<linter> // reason rather than
+# disabling a linter globally.
+
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck    # in v2, absorbs gosimple and stylecheck
+    - errcheck
+    - ineffassign
+    - unused
+    - gosec          # security issues (incl. G112 missing ReadHeaderTimeout)
+    - bodyclose      # response/request bodies must be closed
+    - noctx          # no HTTP requests without context
+    - errorlint      # correct error wrapping/comparison (errors.Is/As)
+    - containedctx   # no context.Context stored in structs
+    - contextcheck   # ensure context is propagated
+    - revive         # configurable golint successor
+    - gocritic
+    - sloglint       # consistent slog key/value style
+    - nilnil         # no return nil, nil
+    - prealloc
+  settings:
+    errcheck:
+      check-type-assertions: true
+    govet:
+      enable-all: true
+    sloglint:
+      kv-only: false
+      attr-only: true   # prefer slog.String(...) attrs over loose key,value pairs
+      context: scope    # require *Context methods where a ctx is in scope
+  exclusions:
+    rules:
+      # Relax a few linters in tests where they're noisy and low-value.
+      - path: _test\.go
+        linters:
+          - gosec
+          - errcheck
+
+# In v2, formatters are a separate top-level section (no longer mixed in with linters).
+formatters:
+  enable:
+    - gofmt
+    - goimports
